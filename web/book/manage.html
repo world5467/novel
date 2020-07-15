@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>管理页面</title>
+		<link rel="stylesheet" type="text/css" href="css/manage.css">
+		<!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+		<link rel="stylesheet" href="css/element-ui.css">
+		<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="js/vue.min.js"></script>
+		<!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+		<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+		<script src="js/element-ui.js"></script>
+		<script type="text/javascript" src="js/md5.js"></script>
+		<script type="text/javascript" src="js/usecookie.js" ></script>
+	</head>
+	<body>
+		<div id="app">
+			<div class="top">
+				<h4 class="top_title" @click="window.location.href= 'index.html'">67小说网</h4>
+				<h3 style="margin-left: 47%; position:relative; top: -20px;">网站管理</h3>
+			</div>
+			
+			<div class="navigation">
+				<div class="navigation_second">
+					<h3 style="cursor: pointer" @click="bookPage">小说管理</h3>
+					<h3 style="cursor: pointer" @click="userPage">账号管理</h3>
+					<h3 style="cursor: pointer" @click="commentPage">评论管理</h3>
+				</div>
+			</div>
+			<div class="condition" v-show="isBook">
+				<h3>小说管理</h3>
+				<div class="search">
+					<el-input placeholder="请输入内容" v-model="input" clearable> </el-input>
+					<el-button type="primary" style="width: 200px; margin-left: 10px;" @click="selectBook">按书名或作者搜索</el-button>
+				</div>
+				<div class="result">
+					<el-table :data="bookResult" stripe style="width: 80%; margin-left: 10%; margin-top: 10px; margin-bottom: 10px; cursor: pointer;">
+				      	<el-table-column prop="type" label="作品分类" width="150"></el-table-column>
+				      	<el-table-column prop="bookName" label="作品名称" width="270"></el-table-column>
+				      	<el-table-column prop="writer" label="作者" width="200"> </el-table-column>
+				      	<el-table-column prop="state" label="状态"> </el-table-column>
+				      	<el-table-column label="操作" width="200">
+				      		<template slot-scope="scope">
+				      			<el-button solt="reference" type="danger" size="small" @click="deleteOpen(scope.$index,deleteBook)">删除</el-button>
+				      			<!--<el-button solt="reference" type="danger" size="small" @click="deleteOpen(bookrackBook[scope.$index].id,delBookrack)">删除</el-button>-->
+				      			<el-button solt="reference" type="danger" size="small" @click="bookUpdate(scope.$index)">修改</el-button>
+				      		</template>
+				      	</el-table-column>
+					</el-table>
+				</div>
+			</div>
+			<div class="condition" v-show="isUser">
+				<h3>账号管理</h3>
+				<div class="search">
+					<el-input placeholder="请输入内容" v-model="input" clearable> </el-input>
+					<el-button type="primary" style="width: 160px; margin-left: 10px;" @click="selectUserByAccount">按账号搜索</el-button>
+					<el-button type="primary" style="width: 160px;" @click="selectUserByUsername">按昵称搜索</el-button>
+				</div>
+				<div class="result">
+					<el-table :data="userResult" stripe style="width: 80%; margin-left: 10%; margin-top: 10px; margin-bottom: 10px; cursor: pointer;">
+				      	<el-table-column prop="account" label="账号" width="150"></el-table-column>
+				      	<el-table-column prop="username" label="昵称" width="320"></el-table-column>
+				      	<el-table-column prop="headPortrait" label="头像"> </el-table-column>
+				      	<el-table-column label="操作" width="200">
+				      		<template slot-scope="scope">
+				      			<el-button solt="reference" type="danger" size="small" @click="deleteOpen(scope.$index,deleteUser)">删除</el-button>
+				      			<!--<el-button solt="reference" type="danger" size="small" @click="deleteOpen(bookrackBook[scope.$index].id,delBookrack)">删除</el-button>-->
+				      			<el-button solt="reference" type="danger" size="small" @click="userUpdate(scope.$index)">修改</el-button>
+				      		</template>
+				      	</el-table-column>
+					</el-table>
+				</div>
+			</div>
+			<div class="condition" v-show="isComment">
+				<h3>评论管理</h3>
+				<div class="search">
+					<el-input placeholder="请输入内容" v-model="input" clearable> </el-input>
+					<el-button type="primary" style="width: 160px; margin-left: 10px;" @click="selectComment">按内容搜索</el-button>
+					<el-button type="primary" style="width: 160px;" @click="selectCommentByAccount">按账号搜索</el-button>
+				</div>
+				<div class="result">
+					<el-table :data="commentResult" stripe style="width: 80%; margin-left: 10%; margin-top: 10px; margin-bottom: 10px; cursor: pointer;">
+				      	<el-table-column prop="account" label="账号" width="150"></el-table-column>
+				      	<el-table-column prop="username" label="昵称" width="250"></el-table-column>
+				      	<el-table-column prop="commentContent" label="评论"> </el-table-column>
+				      	<el-table-column label="操作" width="200">
+				      		<template slot-scope="scope">
+				      			<el-button solt="reference" type="danger" size="small" @click="deleteOpen(scope.$index,deleteComment)">删除</el-button>
+				      			<!--<el-button solt="reference" type="danger" size="small" @click="deleteOpen(bookrackBook[scope.$index].id,delBookrack)">删除</el-button>-->
+				      			<el-button solt="reference" type="danger" size="small" @click="commentUpdate(scope.$index)">修改</el-button>
+				      		</template>
+				      	</el-table-column>
+					</el-table>
+				</div>
+			</div>
+			<div class="lowest" >
+				<div class="lowest_first"></div>
+				<span>本站所有小说为转载作品，所有章节均由网友上传，转载至本站只是为了宣传本书让更多读者欣赏。</span>
+				<span>2020 67小说  All Rights Reserved.</span>
+			</div>
+			<div class="bg" v-show="isVerify">
+				<div class="managePassword">
+					<el-input placeholder="请输入管理员密码" v-model="loginInfo.password" type="password" clearable> </el-input>
+					<el-button type="primary" @click="verifyPassword">验证</el-button>
+				</div>
+			</div>
+			<el-dialog title="修改小说" :visible.sync="bookDialog" width="30%">
+			  	<div class="dialogLine">
+			  		<span>书名：</span>
+			  		<span style="width: 350px;">
+			  			<el-input v-model="bookInfo.bookName"></el-input>
+			  		</span>
+			  	</div>
+			  	<div class="dialogLine">
+			  		<span>作者：</span>
+			  		<span style="width: 350px;">
+			  			<el-input v-model="bookInfo.writer"></el-input>
+			  		</span>
+			  	</div>
+			  	<div class="dialogLine">
+			  		<span>状态：</span>
+			  		<span style="width: 350px;">
+			  			<el-input v-model="bookInfo.state"></el-input>
+			  		</span>
+			  	</div>
+			  	<div class="dialogLine">
+			  		<span>分类：</span>
+			  		<span style="width: 350px;">
+			  			<el-input v-model="bookInfo.type"></el-input>
+			  		</span>
+			  	</div>
+			  	<div class="dialogLine">
+			  		<span></span>
+			  		<span>
+				  		<el-button @click="bookDialog=false">取消</el-button>
+				  		<el-button type="primary" @click="bookUpdateSure">修改</el-button>
+			  		</span>
+			  	</div>
+			</el-dialog>
+			<el-dialog title="修改用户信息" :visible.sync="userDialog" width="30%">
+				<div class="dialogLine">
+			  		<span>账号：</span>
+			  		<span style="width: 350px;">
+			  			<el-input v-model="userInfoResult.account" :disabled="true"></el-input>
+			  		</span>
+			  	</div>
+			  	<div class="dialogLine">
+			  		<span>昵称：</span>
+			  		<span style="width: 350px;">
+			  			<el-input v-model="userInfoResult.username"></el-input>
+			  		</span>
+			  	</div>
+			  	<div class="dialogLine">
+			  		<span>头像：</span>
+			  		<span style="width: 350px;" class="dialogLine">
+			  			<el-input v-model="userInfoResult.headPortrait" :disabled="true"></el-input>
+			  			<el-button type="danger" size="small" @click="userInfoResult.headPortrait=''">清除</el-button>
+			  		</span>
+			  	</div>
+			  	<div class="dialogLine">
+			  		<span></span>
+			  		<span>
+				  		<el-button @click="userDialog=false">取消</el-button>
+				  		<el-button type="primary" @click="userUpdateSure">修改</el-button>
+			  		</span>
+			  	</div>
+			</el-dialog>
+			<el-dialog title="修改评论" :visible.sync="commentDialog" width="30%">
+			  	<div class="dialogLine">
+			  		<span>账号：</span>
+			  		<span style="width: 350px;">
+			  			<el-input v-model="commentInfoResult.account" :disabled="true"></el-input>
+			  		</span>
+			  	</div>
+			  	<div class="dialogLine">
+			  		<span>昵称：</span>
+			  		<span style="width: 350px;">
+			  			<el-input v-model="commentInfoResult.username" :disabled="true"></el-input>
+			  		</span>
+			  	</div>
+			  	<div class="dialogLine">
+			  		<span>评论：</span>
+			  		<span style="width: 350px;">
+			  			<el-input type="textarea" :rows="3" v-model="commentInfoResult.commentContent"></el-input>
+			  		</span>
+			  	</div>
+			  	<div class="dialogLine">
+			  		<span></span>
+			  		<span>
+				  		<el-button @click="commentDialog=false">取消</el-button>
+				  		<el-button type="primary" @click="commentUpdateSure">修改</el-button>
+			  		</span>
+			  	</div>
+			</el-dialog>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/manage.js" ></script>
+	
+</html>

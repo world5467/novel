@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>用户信息</title>
+		<link rel="stylesheet" type="text/css" href="css/user.css">
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<!--<link rel="stylesheet" href="css/element-ui.css">-->
+		<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="js/vue.min.js"></script>
+		<!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<!--<script src="js/element-ui.js"></script>-->
+		<script type="text/javascript" src="js/md5.js"></script>
+		<script type="text/javascript" src="js/usecookie.js" ></script>
+	</head>
+	<body>
+		<div id="app">
+			<div class="top">
+				<h4 class="top_title" @click="window.location.href= 'index.html'">67小说网</h4>
+				<span v-show="!isLogin" style="position: relative; right: 10%;"><a @click="loginDialog=true">登录</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a @click="registerDialog=true">注册</a></span>
+				<span v-show="isLogin" style="position: relative; right: 10%;"><a>{{loginUser.username}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a style="color: #C8C9CC;" @click="logOut">退出</a></span>
+			</div>
+			<div class="header">
+				<img class="titleImg" src="img/title.png" @click="window.location.href= 'index.html'" />
+				<div class="search">
+					<el-input placeholder="请输入内容" v-model="input" clearable> </el-input>
+					<el-button type="primary" icon="el-icon-search" @click="if(input!=''&&input!=null){window.location.href='search.html'+'#'+input}">搜索</el-button>
+				</div>
+				<!--<div  >-->
+					<el-button class="bookrack"icon="el-icon-notebook-1" @click="window.location.href= 'bookrack.html'">&nbsp;&nbsp;我&nbsp;的&nbsp;书&nbsp;架</el-button>
+				<!--</div>-->
+			</div>
+			<div class="navigation">
+				<div class="navigation_second">
+					<h3 style="cursor: pointer" @click="window.location.href= 'index.html'">首&nbsp;&nbsp;页</h3>
+					<h3 style="cursor: pointer" @click="window.location.href= 'all.html'">全&nbsp;&nbsp;部&nbsp;&nbsp;作&nbsp;&nbsp;品</h3>
+					<h3 style="cursor: pointer" @click="window.location.href= 'all.html#全部/全部/全部/已完本'">完&nbsp;&nbsp;本&nbsp;&nbsp;小&nbsp;&nbsp;说</h3>
+					<h3 style="cursor: pointer" @click="window.location.href= 'ranking.html'">小&nbsp;&nbsp;说&nbsp;&nbsp;排&nbsp;&nbsp;行&nbsp;&nbsp;榜</h3>
+				</div>
+			</div>
+			<div class="userInfo">
+				<el-form ref="userInfo" label-position="right" :v-model="userInfo" label-width="100px" class="userInfoForm">
+					<el-form-item label="头像" class="userInfoItem" style="margin-top: 10px; height: 100px;">
+						<div  class="userInfoItem">
+							<el-image :src="'head/'+userInfo.headPortrait" style="position: relative; top: 5px; width: 70px; height: 70px; border-radius: 35px;"></el-image>
+							<el-upload action="http://localhost/users/head" :show-file-list="false" :on-success="handleSuccess" class="userInfoItem">
+								<el-button type="text" style="margin-left: 30px;">点击上传</el-button>
+							</el-upload></div>
+					</el-form-item>
+					<el-form-item label="账号" class="userInfoItem">
+						{{userInfo.account}}
+					</el-form-item>
+					<el-form-item label="密码" class="userInfoItem">
+						**********
+						<el-button type="text" style="position: relative;left: 30px;" @click="passwordDialog=true">修改密码</el-button>
+					</el-form-item>
+					<el-form-item label="网站昵称" class="userInfoItem" >
+						<el-input v-model="userInfo.username"></el-input>
+					</el-form-item>
+					<el-form-item label="个人邮箱" class="userInfoItem">
+						<el-input v-model="userInfo.email"></el-input>
+					</el-form-item>
+					<el-form-item label="性别" class="userInfoItem">
+						<el-radio v-model="userInfo.sex" label="男">男</el-radio>
+  						<el-radio v-model="userInfo.sex" label="女">女</el-radio>
+					</el-form-item>
+					<el-form-item label="生日" class="userInfoItem">
+						<el-date-picker v-model="userInfo.birthday" type="date" placeholder="选择日期"> </el-date-picker>
+					</el-form-item>
+					<el-form-item label=" " class="userInfoItem">
+						<el-button type="danger" style="width: 120px;" @click="updateUserInfo">保存</button>
+					</el-form-item>
+				</el-form>
+			</div>
+			<div class="lowest" >
+				<div class="lowest_first"></div>
+				<span>本站所有小说为转载作品，所有章节均由网友上传，转载至本站只是为了宣传本书让更多读者欣赏。</span>
+				<span>2020 67小说  All Rights Reserved.</span>
+			</div>
+			<el-dialog title="账号登录" :visible.sync="loginDialog" width="30%">
+			  	<el-form ref="login" :model="loginInfo" status-icon :rules="rules" style="width: 90%; margin-left: 5%;">
+				  	<el-form-item prop="account" >
+    					<el-input v-model="loginInfo.account" placeholder="账号"></el-input>
+  					</el-form-item>
+  					<el-form-item prop="password" >
+    					<el-input type="password" v-model="loginInfo.password" placeholder="密码"></el-input>
+  					</el-form-item>
+  					<el-form-item>
+  						<el-checkbox v-model="checked">自动登录</el-checkbox>
+  						<span style="float: right; cursor: pointer;" @click="loginDialog=false;registerDialog=true">免费注册</span>
+  					</el-form-item>
+				  	<el-form-item style="width: 100%; position: relative; top: -13px;">
+				    	<el-button type="primary" @click="login" style="width: 100%;">登录</el-button>
+				  	</el-form-item>
+				</el-form>
+			</el-dialog>
+			<el-dialog title="注册账号" :visible.sync="registerDialog" width="30%">
+			  	<el-form ref="registerInfo" :model="registerInfo" status-icon :rules="rules" style="width: 90%; margin-left: 5%;">
+				  	<el-form-item prop="account" >
+    					<el-input v-model="registerInfo.account" placeholder="账号"></el-input>
+  					</el-form-item>
+  					<el-form-item prop="password" >
+    					<el-input id="registerPassword" type="password" v-model="registerInfo.password" placeholder="密码"  autocomplete="off"></el-input>
+  					</el-form-item>
+  					<el-form-item prop="againPassword" >
+    					<el-input type="password" v-model="registerInfo.againPassword" placeholder="确认密码"  autocomplete="off"></el-input>
+  					</el-form-item>
+  					<el-form-item prop="email" >
+    					<el-input v-model="registerInfo.email" placeholder="个人邮箱"></el-input>
+  					</el-form-item>
+				  	<el-form-item style="width: 100%;">
+				    	<el-button type="primary" @click="resgister" style="width: 100%;">立即注册</el-button>
+				  	</el-form-item>
+				</el-form>
+			</el-dialog>
+			<el-dialog title="修改密码" :visible.sync="passwordDialog" width="30%">
+				<el-form ref="updatePassword" :model="updPassword" status-icon :rules="userRules" style="width: 90%; margin-left: 5%;">
+  					<el-form-item prop="password" >
+    					<el-input type="password" v-model="updPassword.password" placeholder="旧密码"  autocomplete="off"></el-input>
+  					</el-form-item>
+  					<el-form-item prop="newPassword" >
+    					<el-input id="newPassword" type="password" v-model="updPassword.newPassword" placeholder="新密码"  autocomplete="off"></el-input>
+  					</el-form-item>
+  					<el-form-item prop="againNewPassword" >
+    					<el-input type="password" v-model="updPassword.againNewPassword" placeholder="确认密码"  autocomplete="off"></el-input>
+  					</el-form-item>
+				  	<el-form-item style="width: 100%;">
+				    	<el-button type="primary" @click="updatePassword" style="width: 100%;">保存密码</el-button>
+				  	</el-form-item>
+				</el-form>
+			</el-dialog>
+		</div>
+		
+	</body>
+	<script type="text/javascript" src="js/user.js" ></script>
+</html>

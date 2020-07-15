@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>我的书架</title>
+		<link rel="stylesheet" type="text/css" href="css/bookrack.css">
+		<!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+		<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+		<link rel="stylesheet" href="css/element-ui.css">
+		<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="js/vue.min.js"></script>
+		<!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+		<script src="js/element-ui.js"></script>
+		<script type="text/javascript" src="js/md5.js"></script>
+		<script type="text/javascript" src="js/usecookie.js" ></script>
+	</head>
+	<body>
+		<div id="app">
+			<div class="top">
+				<h4 class="top_title" @click="window.location.href= 'index.html'">67小说网</h4>
+				<span v-show="!isLogin" style="position: relative; right: 10%;"><a @click="loginDialog=true">登录</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a @click="registerDialog=true">注册</a></span>
+				<span v-show="isLogin" style="position: relative; right: 10%;"><a @click="window.open('user.html')">{{loginUser.username}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a style="color: #C8C9CC;" @click="logOut">退出</a></span>
+			</div>
+			<div class="header">
+				<img class="titleImg" src="img/title.png" @click="window.location.href= 'index.html'" />
+				<div class="search">
+					<el-input placeholder="请输入内容" v-model="input" clearable> </el-input>
+					<el-button type="primary" icon="el-icon-search" @click="if(input!=''&&input!=null){window.location.href='search.html'+'#'+input}">搜索</el-button>
+				</div>
+				<!--<div  >-->
+					<el-button class="bookrack"icon="el-icon-notebook-1" @click="window.location.href= 'bookrack.html'">&nbsp;&nbsp;我&nbsp;的&nbsp;书&nbsp;架</el-button>
+				<!--</div>-->
+			</div>
+			<div class="navigation">
+				<div class="navigation_second">
+					<h3 style="cursor: pointer" @click="window.location.href= 'index.html'">首&nbsp;&nbsp;页</h3>
+					<h3 style="cursor: pointer" @click="window.location.href= 'all.html'">全&nbsp;&nbsp;部&nbsp;&nbsp;作&nbsp;&nbsp;品</h3>
+					<h3 style="cursor: pointer" @click="window.location.href= 'all.html#全部/全部/全部/已完本'">完&nbsp;&nbsp;本&nbsp;&nbsp;小&nbsp;&nbsp;说</h3>
+					<h3 style="cursor: pointer" @click="window.location.href= 'ranking.html'">小&nbsp;&nbsp;说&nbsp;&nbsp;排&nbsp;&nbsp;行&nbsp;&nbsp;榜</h3>
+				</div>
+			</div>
+			<div class="books">
+				<h1 style="margin-left: 10%; margin-top: 20px; margin-bottom: 20px;">我的书架</h1>
+				<el-table :data="bookrackBook" stripe style="width: 80%; margin-left: 10%; cursor: pointer;">
+			      	<el-table-column prop="type" label="作品分类" width="150"></el-table-column>
+			      	<el-table-column prop="bookName" label="作品名称" width="320">
+			      		<template slot-scope="scope">
+			      			<span @click="jumpBookDetails(bookrackBook[scope.$index].id)">{{bookrackBook[scope.$index].bookName}}</span>
+			      		</template>
+			      	</el-table-column>
+			      	<el-table-column prop="chapterName" label="阅读进度" width="450"> </el-table-column>
+			      	<el-table-column prop="writer" label="作者"> </el-table-column>
+			      	<el-table-column label="操作" width="100">
+			      		<template slot-scope="scope">
+			      				<!--<el-button solt="reference" type="danger" size="small" @click="delBookrack(bookrackBook[scope.$index].id)">删除</el-button>-->
+			      				<el-button solt="reference" type="danger" size="small" @click="deleteOpen(bookrackBook[scope.$index].id,delBookrack)">删除</el-button>
+			      				
+			      		</template>
+			      	</el-table-column>
+				</el-table>
+			</div>
+			<div class="lowest">
+				<div class="lowest_first"></div>
+				<span>本站所有小说为转载作品，所有章节均由网友上传，转载至本站只是为了宣传本书让更多读者欣赏。</span>
+				<span>2020 67小说  All Rights Reserved.</span>
+			</div>
+			<el-dialog title="账号登录" :visible.sync="loginDialog" width="30%">
+			  	<el-form ref="login" :model="loginInfo" status-icon :rules="rules" style="width: 90%; margin-left: 5%;">
+				  	<el-form-item prop="account" >
+    					<el-input v-model="loginInfo.account" placeholder="账号"></el-input>
+  					</el-form-item>
+  					<el-form-item prop="password" >
+    					<el-input type="password" v-model="loginInfo.password" placeholder="密码"></el-input>
+  					</el-form-item>
+  					<el-form-item>
+  						<el-checkbox v-model="checked">自动登录</el-checkbox>
+  						<span style="float: right; cursor: pointer;" @click="loginDialog=false;registerDialog=true">免费注册</span>
+  					</el-form-item>
+				  	<el-form-item style="width: 100%; position: relative; top: -13px;">
+				    	<el-button type="primary" @click="login" style="width: 100%;">登录</el-button>
+				  	</el-form-item>
+				</el-form>
+			</el-dialog>
+			<el-dialog title="注册账号" :visible.sync="registerDialog" width="30%">
+			  	<el-form ref="registerInfo" :model="registerInfo" status-icon :rules="rules" style="width: 90%; margin-left: 5%;">
+				  	<el-form-item prop="account" >
+    					<el-input v-model="registerInfo.account" placeholder="账号"></el-input>
+  					</el-form-item>
+  					<el-form-item prop="password" >
+    					<el-input id="registerPassword" type="password" v-model="registerInfo.password" placeholder="密码"  autocomplete="off"></el-input>
+  					</el-form-item>
+  					<el-form-item prop="againPassword" >
+    					<el-input type="password" v-model="registerInfo.againPassword" placeholder="确认密码"  autocomplete="off"></el-input>
+  					</el-form-item>
+  					<el-form-item prop="email" >
+    					<el-input v-model="registerInfo.email" placeholder="个人邮箱"></el-input>
+  					</el-form-item>
+				  	<el-form-item style="width: 100%;">
+				    	<el-button type="primary" @click="resgister" style="width: 100%;">立即注册</el-button>
+				  	</el-form-item>
+				</el-form>
+			</el-dialog>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/bookrack.js" ></script>
+</html>

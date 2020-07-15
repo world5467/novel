@@ -1,0 +1,230 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+html{
+	height: 100%;
+}
+body{
+	height: 100%;
+}
+#app{
+	width: 100%;
+	height: 100%;
+}
+.top{
+	height: 40px;
+	width: 100%;
+	background: rgb(247,247,247);
+	border-bottom: 1px solid #CCCCCC;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	/*vertical-align: middle;*/
+}
+.top_title{
+	padding:8px;
+	padding-left: 12%;
+}
+.header{
+	height: 100px;
+	width: 100%;
+	/*background-color: blue;*/
+}
+.titleImg{
+	height: 80%;
+	float: left;
+	margin-left: 11% ;
+	position: relative;
+	top: 10%;
+}
+.search{
+	height: 100%;
+	width: 35%;
+	margin-left: 35%;
+	/*background-color: #008000;*/
+	/*line-height: 100%;*/
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: center;
+	/*justify-content: center;*/
+}
+.bookrack{
+	width: 10%;
+	height: 40px;
+	float: right;
+	margin-right: 10%;
+	/*background-color: bisque;*/
+	position: relative;
+	top: -70px;
+	right: 10%;
+	/*border: black solid 2px;
+	border-radius: 5px;
+	overflow: hidden;*/
+}
+
+.bg{
+	width: 100%;
+	height: 100%;
+	background: url(../img/混天记.jpeg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: blur(20px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -2;
+}
+.bg1{
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.3);
+    /*background-repeat: no-repeat;
+    background-size: cover;*/
+    /*filter: blur(20px);*/
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+.chapter{
+	width: 80%;
+	margin-left: 10%;
+	margin-top: 60px;
+	
+}
+.chapterBox{
+	width: 80%;
+	margin-left: 10%;
+	background-color: rgb(248,243,233);
+}
+.chapterContent{
+	width: 80%;
+	margin-left: 10%;
+	margin-bottom: 20px;
+	/*background-color: rgb(248,243,250);*/
+}
+.chapterJump{
+	width: 80%;
+	height: 80px;
+	margin-left: 10%;
+	margin-top: 20px;
+	background-color: rgb(248,243,233);
+	cursor: pointer;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+}
+.chapterNext{
+	width: 32%;
+	height: 60px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	/*text-align: center;*/
+	font-size: 22px;
+	border: 1px solid #C0C4CC;
+}
+.lowest{
+	width: 90%;
+	height: 100px;
+	/*background-color: greenyellow;*/
+	position: relative;
+	/*top: 300px;*/
+	right: -5%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-around;
+}
+.lowest_first{
+	width: 100%;
+	height: 2px;
+	background-color: #BBBBBB;
+	margin:15px ;
+	/*position: relative;
+	top: 30px;*/
+}
+.chapterButton{
+	width: 80px;
+	height: 300px;
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	position: fixed;
+	top: 222px;
+	left: 12%;
+}
+.chapterButtonSon{
+	width: 75px;
+	height: 75px;
+	border: 1px solid #C0C4CC;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background-color: rgb(248,243,233);
+}
+.iconButton{
+	font-size: 30px;
+}
+.directoryWindow{
+	width: 64%;
+	height: 500px;
+	left: 18%;
+	overflow-y: scroll;
+	background-color: rgb(250,249,243);
+	position: fixed;
+	top: 222px;
+	display: none;
+}
+.directory{
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+.chapterName{
+	width: 33%;
+	height: 40px;
+	border-bottom: 1px dotted  #A6A9AD;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+}
+.settingWindow{
+	width: 40%;
+	height: 400px;
+	left: 18%;
+	/*overflow-y: scroll;*/
+	background-color: rgb(250,249,243);
+	position: fixed;
+	top: 222px;
+	display: none;
+}
+.setting{
+	width: 80%;
+	margin-left: 10%;
+	height: 400px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+.settingSon{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+}
+.settingMargin{
+	margin-right: 20px;
+	color: black;
+}
